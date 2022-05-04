@@ -1404,4 +1404,51 @@ for (let i = 0; i < data_before_5.length; i++) {
     all_event_data_before_5.push(new EventData(data_before_5[i], table1));
 }
 
+const nodes_before_5 = [];
+const nodes_5_guild = [];
+const nodes_5_other = [];
+const nodes_final = [];
 
+function setupNodes(data_arr, node_arr) {
+    for (let i = 0; i < data_arr.length; i++) {
+        let curr_item = [];
+        node_arr.push(curr_item);
+        if (data_arr[i]["choice"]) {
+            for (let c of data_arr[i]["choice"]) {
+                curr_item.push([data_arr[i]["base_L"] + c["L"], data_arr[i]["base_G"] + c["G"], data_arr[i]["base_C"] + c["C"]]);
+            }
+        } else {
+            curr_item.push([data_arr[i]["base_L"], data_arr[i]["base_G"], data_arr[i]["base_C"]]);
+        }
+    }
+}
+
+setupNodes(data_before_5, nodes_before_5);
+setupNodes(data_5_guild, nodes_5_guild);
+setupNodes(data_5_other, nodes_5_other);
+setupNodes(data_final, nodes_final);
+
+const potential_sums = [];
+
+for (let i = 0; i < nodes_before_5[0].length; i++) {
+    potential_sums.push(nodes_before_5[0][i]);
+} 
+
+for (let i = 1; i < nodes_before_5.length; i++) {
+    let tmp = [];
+    while (potential_sums.length > 0) {
+        tmp.push(potential_sums.shift());
+    }
+    for (let j = 0; j < tmp.length; j++) {
+        for (let k = 0; k < nodes_before_5[i].length; k++) {
+            potential_sums.push([tmp[j][0] + nodes_before_5[i][k][0], tmp[j][1] + nodes_before_5[i][k][1],tmp[j][2] + nodes_before_5[i][k][2]]);
+        }
+    }
+}
+
+for (let i = 0; i < potential_sums.length; i++) {
+    potential_sums[i] = JSON.stringify(potential_sums[i]);
+}
+
+let s = new Set(potential_sums);
+console.log(s.size);
