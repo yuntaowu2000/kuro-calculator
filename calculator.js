@@ -1419,8 +1419,8 @@ function setupTableAfter5() {
         div_after_5.appendChild(table2);
     } else {
         table2.querySelectorAll('*').forEach(n => n.remove());
-        all_event_data_after_5 = [];
     }
+    all_event_data_after_5 = [];
     let table_caption = document.createElement("caption");
     table_caption.innerText = "第五章及后续事件完成度及选项";
     table2.appendChild(table_caption);
