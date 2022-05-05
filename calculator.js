@@ -1074,41 +1074,99 @@ const data_final = [
     },
 ];
 
+const potential_routes = {
+    "[2,4,4]": "100001010010100201100010101000100000010000000000001110020001000100other",
+    "[2,4,5]": "100001010010100201100010101000110000010000000000001100020001000100other",
+    "[2,5,4]": "100001010010100201100010100000110000010001000000001100020001000100other",
+    "[2,5,5]": "100001010010100201100010101000110000010001000000001100020001000100other",
+    "[3,3,4]": "100001010010100201000000101000000000000000000000121110020001000000other",
+    "[3,3,5]": "100001010010100201000000101000000000000000000000101100020001000000other",
+    "[3,4,3]": "100001010010100201100010100000010000000000000000121120020000000100other",
+    "[3,4,4]": "100001010010100201000000101000000000000000000000121120020001000100other",
+    "[3,4,5]": "100001010010100201000000101000000000000000000000101100020001000100other",
+    "[3,5,2]": "100001010010000101100010000000010000000000000000001000000001000100guild",
+    "[3,5,3]": "100001010010000101100000000000010000000000000000001100010001000100guild",
+    "[3,5,4]": "100001010010100101100010000000110000000000000000001120010001000100other",
+    "[4,2,4]": "000000010000100200000000100000010000000000000000010120020001000000guild",
+    "[4,2,5]": "000000010000100200000000101000010000000000000000000100020001000000other",
+    "[4,3,2]": "100001000000100000000000000000010000000000000000001000000001000100guild",
+    "[4,3,3]": "100001010010100201000000101000000000000000000000121010000000000000other",
+    "[4,3,4]": "100001010010100201000000101000000000000000000000121110020000000000other",
+    "[4,3,5]": "100001010010100200000000101000000000000000000000100100020001000000other",
+    "[4,4,1]": "100001000010000100000000000000010000000000000000101000000000000100guild",
+    "[4,4,2]": "100001000000100000000000000000010000000000000000001000010001000100guild",
+    "[4,4,3]": "100001010010100201000000101000000000000000000000121020010000000100other",
+    "[4,4,4]": "100001010010100201000000101000000000000000000000121120020000000000other",
+    "[4,5,1]": "100001000010000101100000000000010000000000000000101000010000000100guild",
+    "[4,5,2]": "100001010010000101100000000000010000000000000000001000010000000100guild",
+    "[4,5,3]": "100001010010000101100010000000010000000000000000001020010000000100other",
+    "[5,2,2]": "000000010000100000000000000000010000000000000000010010000000000000guild",
+    "[5,2,3]": "000000010000100000000000000000010000000000000000010010000001000000guild",
+    "[5,2,4]": "000000010000100200000000000000010000000000000000010110020001000000guild",
+    "[5,3,1]": "000000000000000000000000000000010000000000000000100000000000000000guild",
+    "[5,3,2]": "100000000000100000000000000000010000000000000000000000000000000000guild",
+    "[5,3,3]": "100001010010100200000000101000010000000000000000120010000000000000other",
+    "[5,3,4]": "100000010000100200000000000000010000000000000000010110020001000000guild",
+    "[5,4,1]": "100000000000000000000000000000010000000000000000101000010000000100guild",
+    "[5,4,2]": "100001000000100000000000000000010000000000000000001000010000000100guild",
+    "[5,4,3]": "100001010000000000000000000000010000000000000000001020010000000100other"
+};
+
 // required value to level up
 const law_level_values = [10, 30, 60, 90, 120];
 const gray_level_values = [8, 25, 50, 75, 100];
 const chaos_level_values = [5, 15, 30, 45, 75];
 
+// all I/O elements for calculating LGC before selecting a partner in chapter 5
 const law_result_field1 = document.getElementById("law_result1");
 const gray_result_field1 = document.getElementById("gray_result1");
 const chaos_result_field1 = document.getElementById("chaos_result1");
 const table1 = document.getElementById("table1");
 const button1 = document.getElementById("button1");
 
+// all I/O elements for calcualting LGC after selecting a partner
 const div_after_5 = document.getElementById("after_5_div");
 const button2 = document.getElementById("button2");
 const law_result_field2 = document.getElementById("law_result2");
 const gray_result_field2 = document.getElementById("gray_result2");
 const chaos_result_field2 = document.getElementById("chaos_result2");
 
+// all I/O elements for calculating routes given a set of LGC levels
+const input_l = document.getElementById("input_l");
+const input_g = document.getElementById("input_g");
+const input_c = document.getElementById("input_c");
+const button_calculate = document.getElementById("button_calculate");
+const warning_div = document.getElementById("warning_div");
+
 class EventData {
+    // Each event data object consists of
+    // the event data as a dictionary as in data_before_5, data_5_guild, data_5_other, data_final
+    // the table that the data will be shown in (either before 5 or after 5)
+    // a checker box indicating if this event is completed
+    // a selector if the event has choices resulting in different LGC values
     constructor(data, target_table) {
         this.data = data;
         this.target_table = target_table;
-        this.setupRow(data);
-        this.setupResult(data);
+        this.setupRow();
+        this.setupResult();
     }
-
-    setupRow(data) {
+    
+    /**
+     * set up the first part of the UI
+     * each row consists of chapter name, event name, 
+     * event finished or not (checker), 
+     * options (selector if there is any, text "无选项" if there is no option)
+     */
+    setupRow() {
         this.row = document.createElement("tr");
 
         let ch = document.createElement("th");
-        ch.innerText = data["chapter"];
+        ch.innerText = this.data["chapter"];
         this.row.appendChild(ch);
 
         // name of the event
         let event_n = document.createElement("th");
-        event_n.innerText = data["event"];
+        event_n.innerText = this.data["event"];
         this.row.appendChild(event_n);
 
         // did we finish the event?
@@ -1116,27 +1174,27 @@ class EventData {
         let checker_col = document.createElement("th");
         this.checker = document.createElement("input");
         this.checker.type = "checkbox";
-        if (data["type"]) {
+        if (this.data["type"]) {
             this.checker.checked = true;
             this.checker.disabled = true;
         } else {
             this.checker.checked = false;
-            this.checker.addEventListener("change", ()=>this.onCheckerChanged(data));
+            this.checker.addEventListener("change", ()=>this.onCheckerChanged());
         }
         checker_col.appendChild(this.checker);
         this.row.appendChild(checker_col);
 
         // what did we select?
         let select_col = document.createElement("th");
-        if (data["choice"]) {
+        if (this.data["choice"]) {
             this.selector = document.createElement("select");
-            for (let i = 0; i < data["choice"].length; i++) {
+            for (let i = 0; i < this.data["choice"].length; i++) {
                 let opt = document.createElement("option");
                 opt.value = i;
-                opt.innerText = data["choice"][i]["text"];
+                opt.innerText = this.data["choice"][i]["text"];
                 this.selector.appendChild(opt);
             }
-            this.selector.addEventListener("change", ()=>this.onSelectorChanged(data));
+            this.selector.addEventListener("change", ()=>this.onSelectorChanged());
             select_col.appendChild(this.selector);
 
             this.selected_val = 0;
@@ -1148,15 +1206,21 @@ class EventData {
         this.target_table.appendChild(this.row);
     }
 
-    setupResult(data) {
-        if (!data["type"]) {
+    /**
+     * set up the second part of the UI
+     * showing the LGC value in the table
+     * if the event is not finished by the user, the result will be 0,0,0
+     * if the event is finished, update the result accordingly with the base LGC and the option LGC.
+     */
+    setupResult() {
+        if (!this.data["type"]) {
             this.result = [0, 0, 0];
-        } else if (!data["choice"]) {
-            this.result = [data["base_L"], data["base_G"], data["base_C"]];
+        } else if (!this.data["choice"]) {
+            this.result = [this.data["base_L"], this.data["base_G"], this.data["base_C"]];
         } else {
             // initially, the selected index is default to 0
-            let additional_r = data["choice"][0];
-            this.result = [data["base_L"] + additional_r["L"], data["base_G"] + additional_r["G"], data["base_C"] + additional_r["C"]];
+            let additional_r = this.data["choice"][0];
+            this.result = [this.data["base_L"] + additional_r["L"], this.data["base_G"] + additional_r["G"], this.data["base_C"] + additional_r["C"]];
         }
         this.law_col = document.createElement("th");
         this.law_col.innerText = this.result[0];
@@ -1172,15 +1236,19 @@ class EventData {
         this.row.appendChild(this.chaos_col);
     }
 
-    onCheckerChanged(data) {
+    /**
+     * handles when a checker box is checked/unchecked
+     * if a checker box is checked, this means that the event is finished, we should include its LGC in the result
+     * if the checker box is unchecked, the event is not done by the user, we should not include the LGC in the result
+     */
+    onCheckerChanged() {
         if (this.checker.checked) {
             // this event is completed
-            console.log("checked");
             if (this.selector) {
-                let additional_r = data["choice"][this.selected_val];
-                this.result = [data["base_L"] + additional_r["L"], data["base_G"] + additional_r["G"], data["base_C"] + additional_r["C"]];
+                let additional_r = this.data["choice"][this.selected_val];
+                this.result = [this.data["base_L"] + additional_r["L"], this.data["base_G"] + additional_r["G"], this.data["base_C"] + additional_r["C"]];
             } else {
-                this.result = [data["base_L"], data["base_G"], data["base_C"]];
+                this.result = [this.data["base_L"], this.data["base_G"], this.data["base_C"]];
             }
         } else {
             this.result = [0, 0, 0];
@@ -1190,11 +1258,16 @@ class EventData {
         this.chaos_col.innerText = this.result[2];
     }
 
-    onSelectorChanged(data) {
+    /**
+     * handles when a selector is updated
+     * update the LGC based on the selection if the event is completed
+     * otherwise, we only update the selected value and keep the result to be 0,0,0
+     */
+    onSelectorChanged() {
         this.selected_val = this.selector.options.selectedIndex;
-        let additional_r = data["choice"][this.selected_val];
+        let additional_r = this.data["choice"][this.selected_val];
         if (this.checker.checked) {
-            this.result = [data["base_L"] + additional_r["L"], data["base_G"] + additional_r["G"], data["base_C"] + additional_r["C"]];
+            this.result = [this.data["base_L"] + additional_r["L"], this.data["base_G"] + additional_r["G"], this.data["base_C"] + additional_r["C"]];
             this.law_col.innerText = this.result[0];
             this.gray_col.innerText = this.result[1];
             this.chaos_col.innerText = this.result[2];
@@ -1214,6 +1287,12 @@ let total_val2 = [];
 // 1：协会，2：黑月，3：结社，4：斑鸠，0：未选择
 let selected_partner = 0;
 
+/**
+ * get the LGC levels based on the corresponding values calcualted from events 
+ * @param {*} target_exp_arr: array, one of law_level_values, gray_level_values, chaos_level_values
+ * @param {*} actual_val: integer, value of the LGC value calcualted from events 
+ * @returns 
+ */
 function getLevel(target_exp_arr, actual_val) {
     for (let i = 0; i < target_exp_arr.length; i++) {
         if (actual_val < target_exp_arr[i]) {
@@ -1229,7 +1308,6 @@ function calculateSumBefore5() {
     let chaos = 0;
     for (let ed of all_event_data_before_5) {
         let r = ed.getResult();
-        console.log(r);
         law += r[0];
         gray += r[1];
         chaos += r[2];
@@ -1238,7 +1316,6 @@ function calculateSumBefore5() {
 }
 
 function setVal1() {
-    console.log("set value clicked");
     total_val = calculateSumBefore5();
     law_result_field1.innerText = total_val[0] + " (LV" + getLevel(law_level_values, total_val[0]) + ")";
     gray_result_field1.innerText = total_val[1] + " (LV" + getLevel(gray_level_values, total_val[1]) + ")";
@@ -1253,7 +1330,6 @@ function calculateSumAll() {
     let chaos = 0;
     for (let ed of all_event_data_before_5) {
         let r = ed.getResult();
-        console.log(r);
         law += r[0];
         gray += r[1];
         chaos += r[2];
@@ -1261,7 +1337,6 @@ function calculateSumAll() {
 
     for (let ed of all_event_data_after_5) {
         let r = ed.getResult();
-        console.log(r);
         law += r[0];
         gray += r[1];
         chaos += r[2];
@@ -1270,13 +1345,16 @@ function calculateSumAll() {
 }
 
 function setVal2() {
-    console.log("set value 2 clicked");
     total_val2 = calculateSumAll();
     law_result_field2.innerText = total_val2[0] + " (LV" + getLevel(law_level_values, total_val2[0]) + ")";
     gray_result_field2.innerText = total_val2[1] + " (LV" + getLevel(gray_level_values, total_val2[1]) + ")";
     chaos_result_field2.innerText = total_val2[2] + " (LV" + getLevel(chaos_level_values, total_val2[2]) + ")";
 }
 
+/**
+ * check the LGC levels and determine whether or not we can select at least one partner
+ * @returns true if we can select at least one partner, false otherwise
+ */
 function checkPartnerAvailable() {
     let law_level = getLevel(law_level_values, total_val[0]);
     let gray_level = getLevel(gray_level_values, total_val[1]);
@@ -1290,6 +1368,10 @@ function checkPartnerAvailable() {
     return true;
 }
 
+/**
+ * setup the partner selector UI based on what partners we can choose
+ * @param {*} partner_selector the html selector element
+ */
 function setupPartnerSelector(partner_selector) {
     let law_level = getLevel(law_level_values, total_val[0]);
     let gray_level = getLevel(gray_level_values, total_val[1]);
@@ -1324,8 +1406,12 @@ function setupPartnerSelector(partner_selector) {
     }
 }
 
+/**
+ * setup the event table after chapter 5
+ * the format is the same as the event table before chapter 5
+ * but the data setup depends on what partners we choose
+ */
 function setupTableAfter5() {
-    console.log("选择了 " + selected_partner);
     let table2 = document.getElementById("table2");
     if (!table2) {
         table2 = document.createElement("table");
@@ -1364,19 +1450,28 @@ function setupTableAfter5() {
     }
 }
 
+// making the partner select button to be public so that we can access it afterwards in simulation
+let button_select = 0;
+
+/**
+ * set up the whole div for UI after selecting a partner in chapter 5
+ */
 function setupAfter5() {
 
+    // remove all the elements in this div if there is any
     div_after_5.querySelectorAll('*').forEach(n => n.remove());
     
     let intro_div = document.createElement("div");
     intro_div.innerText = "请选择第五章合作实力。\n注：此处可选择的势力会根据之前的选项及LGC进行变化！如果需要改变选择，请做出选择后再次点击下方确定按钮。";
     div_after_5.appendChild(intro_div);
 
+    // if we cannot select any partner, do not proceed, and show warning message
     if (!checkPartnerAvailable()) {
         intro_div.innerText = "LGC点数均不足，无法推进";
         return;
     }
 
+    // otherwise, create a selector for selecting partners
     let partner_selector = document.createElement("select");
 
     setupPartnerSelector(partner_selector);
@@ -1390,65 +1485,81 @@ function setupAfter5() {
     }
     div_after_5.appendChild(partner_selector);
 
-    let button = document.createElement("button");
-    button.innerText = "确认选择";
-    button.addEventListener("click", ()=>setupTableAfter5());
-    div_after_5.appendChild(button);
+    // create a button for confirming the selection and setup the table afterwards.
+    button_select = document.createElement("button");
+    button_select.innerText = "确认选择";
+    button_select.addEventListener("click", ()=>setupTableAfter5());
+    div_after_5.appendChild(button_select);
 }
 
-
+// button1 is for updating LGC values before choosing a partner
 button1.addEventListener("click", setVal1);
+// button2 is for updating the final LGC values at the end of the game
 button2.addEventListener("click", setVal2);
 
+// setup the table before choosing a partner in chapter 5
+// also record all the UI and data values
 for (let i = 0; i < data_before_5.length; i++) {
     all_event_data_before_5.push(new EventData(data_before_5[i], table1));
 }
 
-const nodes_before_5 = [];
-const nodes_5_guild = [];
-const nodes_5_other = [];
-const nodes_final = [];
+/**
+ * simulate the selection based on user inputed LGC levels they want to achieve at the end of the game
+ */
+function simulateSelections() {
+    // read the LGC levels as selector input by the user.
+    let l_val = Number(input_l.value);
+    let g_val = Number(input_g.value);
+    let c_val = Number(input_c.value);
 
-function setupNodes(data_arr, node_arr) {
-    for (let i = 0; i < data_arr.length; i++) {
-        let curr_item = [];
-        node_arr.push(curr_item);
-        if (data_arr[i]["choice"]) {
-            for (let c of data_arr[i]["choice"]) {
-                curr_item.push([data_arr[i]["base_L"] + c["L"], data_arr[i]["base_G"] + c["G"], data_arr[i]["base_C"] + c["C"]]);
-            }
-        } else {
-            curr_item.push([data_arr[i]["base_L"], data_arr[i]["base_G"], data_arr[i]["base_C"]]);
+    let lgc_val = JSON.stringify([l_val, g_val, c_val]);
+
+    // the user provided level combination is not achievable
+    if (!(lgc_val in potential_routes)) {
+        warning_div.innerHTML = "无法实现该LGC路线，请重试";
+        return;
+    }
+    // we can achieve the level combination, get the route from precalculated dictionary
+    let selected_route = potential_routes[lgc_val];
+
+    // extract the partner to select, either guild or other
+    let partner = selected_route.substring(selected_route.length - 5, selected_route.length);
+
+    // all the selections they should make in the game
+    selected_route = selected_route.substring(0, selected_route.length - 5);
+
+    // simulate the selections
+    for (let i = 0; i < all_event_data_before_5.length; i++) {
+        if (all_event_data_before_5[i].selector) {
+            all_event_data_before_5[i].selector.value = selected_route[i];
+            all_event_data_before_5[i].selected_val = selected_route[i];
         }
+        all_event_data_before_5[i].checker.checked = true;
+        all_event_data_before_5[i].onCheckerChanged();
     }
-}
 
-setupNodes(data_before_5, nodes_before_5);
-setupNodes(data_5_guild, nodes_5_guild);
-setupNodes(data_5_other, nodes_5_other);
-setupNodes(data_final, nodes_final);
+    button1.click();
 
-const potential_sums = [];
-
-for (let i = 0; i < nodes_before_5[0].length; i++) {
-    potential_sums.push(nodes_before_5[0][i]);
-} 
-
-for (let i = 1; i < nodes_before_5.length; i++) {
-    let tmp = [];
-    while (potential_sums.length > 0) {
-        tmp.push(potential_sums.shift());
+    if (partner == "guild") {
+        warning_div.innerHTML = "第五章时，请选择协会路线。";
+        selected_partner = 1;
+    } else {
+        warning_div.innerHTML = "第五章时，请选择黑月/结社/斑鸠路线。";
+        selected_partner = 2;
     }
-    for (let j = 0; j < tmp.length; j++) {
-        for (let k = 0; k < nodes_before_5[i].length; k++) {
-            potential_sums.push([tmp[j][0] + nodes_before_5[i][k][0], tmp[j][1] + nodes_before_5[i][k][1],tmp[j][2] + nodes_before_5[i][k][2]]);
+
+    button_select.click();
+
+    for (let i = 0; i < all_event_data_after_5.length; i++) {
+        if (all_event_data_after_5[i].selector) {
+            all_event_data_after_5[i].selector.value = selected_route[all_event_data_before_5.length + i];
+            all_event_data_after_5[i].selected_val = selected_route[all_event_data_before_5.length + i];
         }
+        all_event_data_after_5[i].checker.checked = true;
+        all_event_data_after_5[i].onCheckerChanged();
     }
+
+    button2.click();
 }
 
-for (let i = 0; i < potential_sums.length; i++) {
-    potential_sums[i] = JSON.stringify(potential_sums[i]);
-}
-
-let s = new Set(potential_sums);
-console.log(s.size);
+button_calculate.addEventListener("click", ()=>simulateSelections());
