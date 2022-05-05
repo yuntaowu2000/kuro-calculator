@@ -1287,6 +1287,10 @@ let total_val2 = [];
 // 1：协会，2：黑月，3：结社，4：斑鸠，0：未选择
 let selected_partner = 0;
 
+// making the partner select button to be public so that we can access it afterwards in simulation
+let button_select = 0;
+let partner_selector = 0;
+
 /**
  * get the LGC levels based on the corresponding values calcualted from events 
  * @param {*} target_exp_arr: array, one of law_level_values, gray_level_values, chaos_level_values
@@ -1302,11 +1306,16 @@ function getLevel(target_exp_arr, actual_val) {
     return target_exp_arr.length;
 }
 
-function calculateSumBefore5() {
+/**
+ * calculate the exp sums of LGC, based on the provided event data
+ * @param {*} event_data: an array of EventData object
+ * @returns array [law exp, gray exp, chaos exp] 
+ */
+function calculateSum(event_data) {
     let law = 0;
     let gray = 0;
     let chaos = 0;
-    for (let ed of all_event_data_before_5) {
+    for (let ed of event_data) {
         let r = ed.getResult();
         law += r[0];
         gray += r[1];
@@ -1315,40 +1324,17 @@ function calculateSumBefore5() {
     return [law, gray, chaos]
 }
 
-function setVal1() {
-    total_val = calculateSumBefore5();
-    law_result_field1.innerText = total_val[0] + " (LV" + getLevel(law_level_values, total_val[0]) + ")";
-    gray_result_field1.innerText = total_val[1] + " (LV" + getLevel(gray_level_values, total_val[1]) + ")";
-    chaos_result_field1.innerText = total_val[2] + " (LV" + getLevel(chaos_level_values, total_val[2]) + ")";
-    selected_partner = 0;
-    setupAfter5();
-}
-
-function calculateSumAll() {
-    let law = 0;
-    let gray = 0;
-    let chaos = 0;
-    for (let ed of all_event_data_before_5) {
-        let r = ed.getResult();
-        law += r[0];
-        gray += r[1];
-        chaos += r[2];
-    }
-
-    for (let ed of all_event_data_after_5) {
-        let r = ed.getResult();
-        law += r[0];
-        gray += r[1];
-        chaos += r[2];
-    }
-    return [law, gray, chaos]
-}
-
-function setVal2() {
-    total_val2 = calculateSumAll();
-    law_result_field2.innerText = total_val2[0] + " (LV" + getLevel(law_level_values, total_val2[0]) + ")";
-    gray_result_field2.innerText = total_val2[1] + " (LV" + getLevel(gray_level_values, total_val2[1]) + ")";
-    chaos_result_field2.innerText = total_val2[2] + " (LV" + getLevel(chaos_level_values, total_val2[2]) + ")";
+/**
+ * given an array of LGC value calculated, update the corresponding LGC results in the UI.
+ * @param {*} total_val: an array of LGC exp calculated
+ * @param {*} law_result_field: UI element for showing law exp and law level.
+ * @param {*} gray_result_field: UI element for showing gray exp and gray level.
+ * @param {*} chaos_result_field: UI element for showing chaos exp and chaos level.
+ */
+function setVal(total_val, law_result_field, gray_result_field, chaos_result_field) {
+    law_result_field.innerText = total_val[0] + " (LV" + getLevel(law_level_values, total_val[0]) + ")";
+    gray_result_field.innerText = total_val[1] + " (LV" + getLevel(gray_level_values, total_val[1]) + ")";
+    chaos_result_field.innerText = total_val[2] + " (LV" + getLevel(chaos_level_values, total_val[2]) + ")";
 }
 
 /**
@@ -1450,10 +1436,6 @@ function setupTableAfter5() {
     }
 }
 
-// making the partner select button to be public so that we can access it afterwards in simulation
-let button_select = 0;
-let partner_selector = 0;
-
 /**
  * set up the whole div for UI after selecting a partner in chapter 5
  */
@@ -1494,9 +1476,19 @@ function setupAfter5() {
 }
 
 // button1 is for updating LGC values before choosing a partner
-button1.addEventListener("click", setVal1);
+button1.addEventListener("click", ()=>{
+    total_val = calculateSum(all_event_data_before_5);
+    setVal(total_val, law_result_field1, gray_result_field1, chaos_result_field1);
+    // also setup the div for selecting the partner
+    selected_partner = 0;
+    setupAfter5();
+});
 // button2 is for updating the final LGC values at the end of the game
-button2.addEventListener("click", setVal2);
+button2.addEventListener("click", ()=>{
+    let all_event_data = [].concat(all_event_data_before_5, all_event_data_after_5);
+    total_val2 = calculateSum(all_event_data);
+    setVal(total_val2, law_result_field2, gray_result_field2, chaos_result_field2);
+});
 
 // setup the table before choosing a partner in chapter 5
 // also record all the UI and data values
