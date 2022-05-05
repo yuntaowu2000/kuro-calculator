@@ -1452,6 +1452,7 @@ function setupTableAfter5() {
 
 // making the partner select button to be public so that we can access it afterwards in simulation
 let button_select = 0;
+let partner_selector = 0;
 
 /**
  * set up the whole div for UI after selecting a partner in chapter 5
@@ -1462,7 +1463,7 @@ function setupAfter5() {
     div_after_5.querySelectorAll('*').forEach(n => n.remove());
     
     let intro_div = document.createElement("div");
-    intro_div.innerText = "请选择第五章合作实力。\n注：此处可选择的势力会根据之前的选项及LGC进行变化！如果需要改变选择，请做出选择后再次点击下方确定按钮。";
+    intro_div.innerText = "请选择第五章合作实力。\n注：此处可选择的势力会根据之前的选项及LGC进行变化！如果需要改变选择，请做出选择后再次点击下方确认选择按钮。";
     div_after_5.appendChild(intro_div);
 
     // if we cannot select any partner, do not proceed, and show warning message
@@ -1472,7 +1473,7 @@ function setupAfter5() {
     }
 
     // otherwise, create a selector for selecting partners
-    let partner_selector = document.createElement("select");
+    partner_selector = document.createElement("select");
 
     setupPartnerSelector(partner_selector);
     
@@ -1543,9 +1544,26 @@ function simulateSelections() {
     if (partner == "guild") {
         warning_div.innerHTML = "第五章时，请选择协会路线。";
         selected_partner = 1;
+        partner_selector.value = 1;
     } else {
         warning_div.innerHTML = "第五章时，请选择黑月/结社/斑鸠路线。";
-        selected_partner = 2;
+        let l_level = getLevel(law_level_values, total_val[0]);
+        let g_level = getLevel(gray_level_values, total_val[1]);
+        let c_level = getLevel(chaos_level_values, total_val[2]);
+        console.log(l_level, g_level, c_level);
+        if (g_level >= 3) {
+            // 黑月
+            selected_partner = 2;
+            partner_selector.value = 2;
+        } else if (c_level >= 3) {
+            // 结社
+            selected_partner = 3;
+            partner_selector.value = 3;
+        } else if (l_level + c_level >= 5) {
+            // 斑鸠
+            selected_partner = 4;
+            partner_selector.value = 4;
+        }
     }
 
     button_select.click();
