@@ -1275,7 +1275,7 @@ class EventData {
     }
 
     getResult() {
-        return this.result;
+        return [].concat(this.result);
     }
 }
 
