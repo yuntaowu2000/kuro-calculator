@@ -1,0 +1,60 @@
+.submit {
+    width: 100px;
+    margin: 20px auto;
+    text-align: center;
+}
+.submit button {
+    width: 100px;
+    height: 30px;
+    font-size: 20px;
+    border: 1px solid white;
+    border-radius: 10px;
+    background-color: white;
+    color: black;
+}
+.submit button:hover {
+    transition: 0.1s;
+    border: 2px solid white;
+}
+.submit button:active {
+    transition: 0.1s;
+    background-color: azure;
+    color: black;
+}
+
+/*table, caption, tbody, tfoot, thead, tr, th, td {*/
+/*    margin-left: auto;*/
+/*    margin-right: auto;*/
+/*    text-align: center;*/
+/*    padding: 5 !important;*/
+/*    border: 0 !important;*/
+/*    font-size: 100% !important;*/
+    /* font: inherit !important; */
+/*    vertical-align: baseline !important;*/
+/*    font-weight: bold !important;*/
+/*}*/
+
+/*body[data-elementor-device-mode='desktop'] table {*/
+/*    width: 80% !important;*/
+/*    margin: 10px 20% 10px !important;*/
+/*}*/
+  
+/*body[data-elementor-device-mode='tablet'] table {*/
+/*    width: 80% !important;*/
+/*    margin: 10px 20% 10px !important;*/
+/*}*/
+  
+/*body[data-elementor-device-mode='mobile'] table {*/
+/*    display: block;*/
+/*    overflow-x: auto;*/
+/*    white-space: nowrap;*/
+/*    padding: 0 0 10px 0 !important;*/
+/*}*/
+  
+/*body[data-elementor-device-mode='mobile'] th, td {*/
+/*    padding: 0 12px 0 0 !important;*/
+/*}*/
+  
+/*body[data-elementor-device-mode='mobile'] caption {*/
+/*    text-align: left;*/
+/*}*/
