@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <meta charset="utf-8">
+  <body style="background-color: black;">
+    <div>
+        <h2 style="color:white; text-align: center;">LGC计算器</h2>
+        <div style="color:white">注：游戏中达成同一种LGC等级有多种方式，本计算器模拟线路只提供其中一种方式。</div>
+        <div style="color:white">注2：玩家也可以在下方自行进行模拟选择。</div>
+        <div style="color:white">注3：本计算器为测试版，可能发生任何问题，如遇任何计算相关问题，请使用问题反馈功能，并提供重现方式（选了什么，进行了什么操作）。目前暂未对手机等设备进行适配，字体等相关内容也未进行设置，后续会逐步完善，敬请谅解。</div>
+        <table style="color:white"><caption>请输入需要的最终LGC等级</caption>
+            <tbody>
+                <tr>
+                    <th>LAW等级</th>
+                    <th>GRAY等级</th>
+                    <th>CHAOS等级</th>
+                </tr>
+                <tr>
+                    <th>
+                        <select id="input_l">
+                            <option value=4>4</option>
+                            <option value=5>5</option>
+                            <option value=6>6</option>
+                        </select>
+                    </th>
+                    <th>
+                        <select id="input_g">
+                            <option value=4>4</option>
+                            <option value=5>5</option>
+                            <option value=6>6</option>
+                        </select>
+                    </th>
+                    <th>
+                        <select id="input_c">
+                            <option value=4>4</option>
+                            <option value=5>5</option>
+                            <option value=6>6</option>
+                        </select>
+                    </th>
+                </tr>
+            </tbody>
+        </table>
+        <div class="submit">
+            <button id="button_calculate" type="button">确定</button>
+        </div>
+        <div id="warning_div" style="color:white"></div>
+    </div>
+    <div>
+        <table id="table" style="color:white"><caption>事件完成度及选项</caption>
+            <tbody>
+                <tr>
+                    <th>章节</th>
+                    <th>事件名</th>
+                    <th>完成？</th>
+                    <th>选择</th>
+                    <th>实际获得LAW</th>
+                    <th>实际获得GRAY</th>
+                    <th>实际获得CHAOS</th>
+                </tr>
+            </tbody>
+        </table>
+        <div class="submit">
+            <button id="button" type="button">确定</button>
+        </div>
+        <table style="color:white"><caption>最终LGC</caption>
+            <tbody>
+                <tr>
+                    <th>LAW</th>
+                    <th>GRAY</th>
+                    <th>CHAOS</th>
+                </tr>
+                <tr>
+                    <th id="law_result">0</th>
+                    <th id="gray_result">0</th>
+                    <th id="chaos_result">0</th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+  </body>
+  <link href="calculator.css" rel="stylesheet">
+  <script src="calculator.js"></script>
+  <!-- <script src="precalculateRoutes.js"></script> -->
+</html>
