@@ -1,33 +1,115 @@
+body{
+    background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url("./kuro2/黎轨.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    backdrop-filter: blur(5px);
+}
+
 .submit {
     width: 100px;
     margin: 20px auto;
     text-align: center;
 }
+
 .submit button {
     width: 100px;
-    height: 30px;
-    font-size: 20px;
-    border: 1px solid white;
-    border-radius: 10px;
-    background-color: white;
-    color: black;
-}
-.submit button:hover {
-    transition: 0.1s;
-    border: 2px solid white;
-}
-.submit button:active {
-    transition: 0.1s;
-    background-color: azure;
-    color: black;
+    height: 40px;
+    padding: 8px 16px;
+    font-size: 16px;
+    
+    background-color: #2A2D30;
+    color: white;
+    
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-table {
+.submit button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border-color: white;
+}
+
+.submit button:active {
+    transform: translateY(1px);
+    background-color: #2A2D30;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+#input_l, #input_g, #input_c{
+    width: 100px;
+    background-color: #2A2D30;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    padding: 0 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+#table  select, #table1  select, #table2 select {
+    background-color: #2A2D30;
+    width: 220px;
+    height: 30px;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    padding: 0 8px;
+    cursor: pointer;
+    font-size: 14px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 16px;
+}
+
+select:hover {
+    border-color: rgba(255, 255, 255, 0.5);
+    background-color: #32363A;
+}
+
+select:focus {
+    outline: none;
+    border-color: #1ebbf0;
+    box-shadow: 0 0 0 2px rgba(30, 187, 240, 0.2);
+}
+
+/* option 样式 */
+select option {
+    background-color: #2A2D30;
+    color: white;
+    padding: 8px;
+    font-size: 14px;
+}
+
+/* 鼠标悬停在 option 上的样式 */
+select option:hover,
+select option:focus,
+select option:active,
+select option:checked {
+    width: 100px !important;
+    height: 30px !important;
+    background: linear-gradient(135deg, #1ebbf0 30%, #39dfaa 100%);
+    background-color: #1ebbf0 !important;
+    color: white !important;
+}
+
+/* table {
     display: block;
     overflow-x: auto;
     white-space: nowrap;
-}
-
+} */
+/* th,td{
+    padding: 5px;
+} */
 /*table, caption, tbody, tfoot, thead, tr, th, td {*/
 /*    margin-left: auto;*/
 /*    margin-right: auto;*/
